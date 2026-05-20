@@ -7,6 +7,7 @@ import { PostsModule } from './posts/posts.module';
 import { EventsModule } from './events/events.module';
 import { MessagesModule } from './messages/messages.module';
 import { StorageModule } from './storage/storage.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StorageModule } from './storage/storage.module';
     PostsModule,
     EventsModule,
     MessagesModule,
+    NotificationsModule,
     StorageModule,
   ],
 })

@@ -35,8 +35,8 @@ export class PostsController {
   @ApiOperation({ summary: 'Tüm postları listele' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  findAll(@Query('page') page = 1, @Query('limit') limit = 20) {
-    return this.postsService.findAll(Number(page), Number(limit));
+  findAll(@Request() req: any, @Query('page') page = 1, @Query('limit') limit = 20) {
+    return this.postsService.findAll(req.user.id, Number(page), Number(limit));
   }
 
   @Get('nearby')
@@ -45,12 +45,14 @@ export class PostsController {
   @ApiQuery({ name: 'lon', required: true })
   @ApiQuery({ name: 'radius', required: false, description: 'km cinsinden' })
   findNearby(
+    @Request() req: any,
     @Query('lat') lat: string,
     @Query('lon') lon: string,
     @Query('radius') radius = '10',
     @Query('page') page = 1,
   ) {
     return this.postsService.findNearby(
+      req.user.id,
       parseFloat(lat),
       parseFloat(lon),
       parseFloat(radius),
@@ -83,21 +85,21 @@ export class PostsController {
   @Post(':id/like')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Post beğen' })
-  like(@Param('id', ParseUUIDPipe) id: string) {
-    return this.postsService.like(id);
+  like(@Param('id', ParseUUIDPipe) id: string, @Request() req: any) {
+    return this.postsService.like(id, req.user.id);
   }
 
   @Post(':id/unlike')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Beğeniyi geri al' })
-  unlike(@Param('id', ParseUUIDPipe) id: string) {
-    return this.postsService.unlike(id);
+  unlike(@Param('id', ParseUUIDPipe) id: string, @Request() req: any) {
+    return this.postsService.unlike(id, req.user.id);
   }
 
   @Post(':id/retweet')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Retweet' })
-  retweet(@Param('id', ParseUUIDPipe) id: string) {
-    return this.postsService.retweet(id);
+  retweet(@Param('id', ParseUUIDPipe) id: string, @Request() req: any) {
+    return this.postsService.retweet(id, req.user.id);
   }
 }

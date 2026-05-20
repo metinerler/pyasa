@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,7 +15,18 @@ import { EventCircle } from '../../components/common/EventCircle';
 
 export const EventsScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
-  const { events } = useFeedStore();
+  const { events, fetchEvents } = useFeedStore();
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    void fetchEvents();
+  }, [fetchEvents]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchEvents().catch(() => undefined);
+    setRefreshing(false);
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -30,6 +42,19 @@ export const EventsScreen: React.FC = () => {
         keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={Colors.primary}
+          />
+        }
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Ionicons name="calendar-outline" size={34} color={Colors.textSecondary} />
+            <Text style={styles.emptyText}>Henüz etkinlik yok.</Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.eventCard}>
             <View style={styles.eventImagePlaceholder}>
@@ -135,5 +160,14 @@ const styles = StyleSheet.create({
   eventDate: {
     color: Colors.textSecondary,
     fontSize: 12,
+  },
+  empty: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    gap: 8,
+  },
+  emptyText: {
+    color: Colors.textSecondary,
+    fontSize: 14,
   },
 });

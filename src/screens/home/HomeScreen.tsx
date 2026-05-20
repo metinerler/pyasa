@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
+import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../../theme/colors';
 import { useAuthStore } from '../../store/authStore';
@@ -22,6 +23,7 @@ import { StoryCircle } from '../../components/common/StoryCircle';
 import { CategoryChip } from '../../components/common/CategoryChip';
 import { Avatar } from '../../components/common/Avatar';
 import { Event } from '../../types';
+import { api } from '../../api/client';
 
 const CATEGORIES = [
   { label: 'Tümü', icon: 'sparkles-outline' },
@@ -86,6 +88,7 @@ function EventCard({ event }: { event: Event }) {
 
 export const HomeScreen: React.FC = () => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const { user, localAvatarUri } = useAuthStore();
   const {
     posts,
@@ -100,14 +103,28 @@ export const HomeScreen: React.FC = () => {
     toggleLike,
     toggleRetweet,
     addPost,
+    refreshAll,
   } = useFeedStore();
 
   const [postText, setPostText] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
-  const handleRefresh = () => {
+  const fetchUnreadNotifications = async () => {
+    const result = await api.get<{ count: number }>('/notifications/unread-count');
+    setUnreadNotifications(result.count);
+  };
+
+  useEffect(() => {
+    void refreshAll();
+    void fetchUnreadNotifications().catch(() => undefined);
+  }, [refreshAll]);
+
+  const handleRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 1200);
+    await refreshAll();
+    await fetchUnreadNotifications().catch(() => undefined);
+    setRefreshing(false);
   };
 
   const handleShare = () => {
@@ -148,9 +165,15 @@ export const HomeScreen: React.FC = () => {
           <TouchableOpacity style={styles.iconBtn}>
             <Ionicons name="search" size={21} color={Colors.white} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBtn}>
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => {
+              setUnreadNotifications(0);
+              navigation.navigate('Notifications');
+            }}
+          >
             <Ionicons name="notifications" size={21} color={Colors.white} />
-            <View style={styles.notifDot} />
+            {unreadNotifications > 0 && <View style={styles.notifDot} />}
           </TouchableOpacity>
         </View>
       </View>

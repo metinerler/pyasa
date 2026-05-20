@@ -15,6 +15,7 @@ import { MapScreen } from '../screens/map/MapScreen';
 import { MessagesScreen } from '../screens/messages/MessagesScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { EditProfileScreen } from '../screens/profile/EditProfileScreen';
+import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -99,6 +100,7 @@ export const AppNavigator: React.FC = () => {
           <>
             <Stack.Screen name="Main" component={MainTabs} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ presentation: 'modal' }} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} />
           </>
         ) : (
           <>

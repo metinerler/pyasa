@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "Pyassa",
+    "slug": "pyassa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "assetBundlePatterns": ["**/*"],
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.pyassa.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Pyassa yakınındaki kullanıcıları göstermek için konumunuzu kullanır.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Pyassa yakınındaki kullanıcıları göstermek için konumunuzu kullanır.",
+        "NSPhotoLibraryUsageDescription": "Pyassa fotoğraf paylaşabilmek için kütüphanenize erişim ister.",
+        "NSCameraUsageDescription": "Pyassa fotoğraf çekebilmek için kamera erişimi ister."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0F"
+      },
+      "package": "com.pyassa.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "READ_MEDIA_IMAGES",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Pyassa fotoğraf paylaşabilmek için kütüphanenize erişim ister."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Pyassa yakınındaki kullanıcıları göstermek için konumunuzu kullanır."
+        }
+      ]
+    ]
+  }
+}
